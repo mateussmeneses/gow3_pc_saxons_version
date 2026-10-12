@@ -112,11 +112,16 @@ def main():
         run_script('link_modules.py', game, '--out', out)
         run_script('content_profile.py', game, '--out', out, '--sku', env.get('GOW3_CONTENT_SKU', 'full'))
 
-        from patches import (eboot_matches, game_app_version, game_profile, game_title_id,
-                             patch_requirements, selected_patches)
+        from patches import (PATCH_PROFILES, eboot_matches, eboot_sha256, game_app_version,
+                             game_profile, game_title_id, patch_requirements, selected_patches)
         profile = game_profile(game_title_id(game))
+        # A recognized shifted dump (its sha256 is a relocation profile) is patchable too:
+        # patches.py relocates its writes per region, so the same patch selection and the DMEM/
+        # VBlank derivation below apply.
+        recognized = bool(profile) and game_app_version(game) == profile[2] and \
+            eboot_sha256(game) in PATCH_PROFILES
         patched = bool(profile) and ((game_app_version(game) == profile[2] and eboot_matches(game, profile))
-                                     or bool(env.get('GOW3_FORCE_PATCHES')))
+                                     or recognized or bool(env.get('GOW3_FORCE_PATCHES')))
         # The window shows the game's icon (BMP: the format SDL loads without extra libraries).
         try:
             from PIL import Image
