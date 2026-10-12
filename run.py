@@ -112,16 +112,12 @@ def main():
         run_script('link_modules.py', game, '--out', out)
         run_script('content_profile.py', game, '--out', out, '--sku', env.get('GOW3_CONTENT_SKU', 'full'))
 
-        from patches import (PATCH_PROFILES, eboot_matches, eboot_sha256, game_app_version,
-                             game_profile, game_title_id, patch_requirements, selected_patches)
+        # game_patchable now also recognizes a shifted dump (its sha256 is a relocation profile
+        # in patches.py), so the same patch selection and DMEM/VBlank derivation below apply to it.
+        from patches import game_patchable, game_profile, game_title_id, patch_requirements, selected_patches
         profile = game_profile(game_title_id(game))
-        # A recognized shifted dump (its sha256 is a relocation profile) is patchable too:
-        # patches.py relocates its writes per region, so the same patch selection and the DMEM/
-        # VBlank derivation below apply.
-        recognized = bool(profile) and game_app_version(game) == profile[2] and \
-            eboot_sha256(game) in PATCH_PROFILES
-        patched = bool(profile) and ((game_app_version(game) == profile[2] and eboot_matches(game, profile))
-                                     or recognized or bool(env.get('GOW3_FORCE_PATCHES')))
+        patched = bool(profile) and (game_patchable(game) or bool(env.get('GOW3_FORCE_PATCHES')))
+        engine_fps = 60
         # The window shows the game's icon (BMP: the format SDL loads without extra libraries).
         try:
             from PIL import Image
@@ -141,6 +137,7 @@ def main():
             names = graphics_options.patch_names(names, graphics)
             env['GOW3_PATCHES'] = ';'.join(names)
             env['GOW3_PATCHES_ONLY'] = '1'
+            engine_fps = graphics_options.applied_engine_fps(names)
             dmem, vblank = patch_requirements(profile[1], names, profile[2])
             for key, value in (('GOW3_DMEM_MB', dmem), ('GOW3_VBLANK_HZ', vblank)):
                 if value and key not in env:
@@ -152,6 +149,13 @@ def main():
         if 'GOW3_VBLANK_HZ' not in env:
             env['GOW3_VBLANK_HZ'] = '60'
             derived.append('GOW3_VBLANK_HZ')
+        # Without the frame rate patch the engine steps 1/60 s per frame: the present thread must
+        # not flip faster (gow3_graphics.h PresentLimit), or the game speeds up.
+        env['GOW3_ENGINE_FPS'] = str(engine_fps)
+        derived.append('GOW3_ENGINE_FPS')
+        print(f'Engine frame rate: {engine_fps} FPS'
+              + ('' if engine_fps > 60 or graphics['engine_fps'] == '60' else
+                 ' (the frame rate patch is not available for this game build)'), flush=True)
         env['GOW3_DERIVED'] = ','.join(derived)
 
         # The in-game restart starts this script again once this process is gone.

@@ -167,6 +167,18 @@ def eboot_matches(game, profile):
         return False
 
 
+def game_patchable(game):
+    """Whether the built-in patches apply to this game folder: a known game and version, and
+    either the reference build or a recognized shifted dump (relocated per region, see
+    PATCH_PROFILES)."""
+    if not game:
+        return False
+    profile=game_profile(game_title_id(game))
+    if not profile or game_app_version(game)!=profile[2]:
+        return False
+    return eboot_matches(game,profile) or eboot_sha256(game) in PATCH_PROFILES
+
+
 # God of War III notes: the texture fix and the resolution patches both resize the video arena;
 # enable one, never both. A chosen resolution patch replaces the default texture fix.
 EXCLUSIVE_PREFIX='Resolution Patch'
