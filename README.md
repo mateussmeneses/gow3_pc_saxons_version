@@ -2,24 +2,24 @@
 
 **English** | [Português (Brasil)](README.pt-BR.md)
 
-> ## Por que este fork (Saxon's Version)
+> ## Why this fork (Saxon's Version)
 >
-> Este é um fork de [gow3_pc](https://github.com/FelipePrado0/gow3_pc) criado para resolver um
-> problema concreto: nem todo dump de **CUSA01623 01.02** é idêntico byte a byte ao build contra
-> o qual os cheats e os patches do projeto original foram feitos. Em dumps com um `eboot.bin`
-> diferente, o código fica deslocado por região, e no projeto original todos os hooks (Very Hard,
-> saltos infinitos, vida/magia, barra de vida) e os patches de resolução eram recusados com
-> "code signature mismatch" — ou, se forçados, corrompiam o jogo.
+> This is a fork of [gow3_pc](https://github.com/FelipePrado0/gow3_pc) made to solve a concrete
+> problem: not every **CUSA01623 01.02** dump is byte-for-byte identical to the build the original
+> project's cheats and patches were authored against. On dumps with a different `eboot.bin` the
+> code is shifted per region, so in the original project every hook (Very Hard, infinite jumps,
+> health/magic, the enemy health bar) and the resolution patches were refused with
+> "code signature mismatch" — or, when forced, corrupted the game.
 >
-> Esta versão **reloca hooks e patches por assinatura** para o seu dump: detecta o deslocamento do
-> build a partir de assinaturas únicas e reaplica cada hook/patch no lugar certo, verificando os
-> bytes antes de escrever. Com isso, no dump deslocado passam a funcionar os **cheats** (incluindo
-> **Unlock Very Hard**), a **barra de vida do inimigo** e as **resoluções 480p/720p**, além do
-> texture fix e do pular vídeos.
+> This version **relocates hooks and patches by signature** for your dump: it detects the build's
+> shift from unique signatures and reapplies each hook/patch at the right place, verifying the
+> bytes before writing. As a result, on a shifted dump the **cheats** (including **Unlock Very
+> Hard**), the **enemy health bar** and the **480p/720p resolutions** work, along with the texture
+> fix and video skipping.
 >
-> Limitações atuais neste dump: 1440p/1800p/4K e o patch de 120/240 FPS ainda não estão mapeados
-> (caem para nativo com aviso, sem travar). Detalhes e passo a passo em
-> [docs/REPRODUZIR.md](docs/REPRODUZIR.md). O restante deste README é do projeto original.
+> Current limitations on this dump: 1440p/1800p/4K and the 120/240 FPS patch are not mapped yet
+> (they fall back to native with a log warning, without crashing). Details and a step-by-step guide
+> in [docs/REPRODUCE.md](docs/REPRODUCE.md). The rest of this README is from the original project.
 
 A native port of **God of War III Remastered** (PlayStation 4) to Windows 10 and 11.
 
