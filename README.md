@@ -1,6 +1,25 @@
-# God of War III Remastered for PC
+# God of War III Remastered for PC — Saxon's Version
 
 **English** | [Português (Brasil)](README.pt-BR.md)
+
+> ## Por que este fork (Saxon's Version)
+>
+> Este é um fork de [gow3_pc](https://github.com/FelipePrado0/gow3_pc) criado para resolver um
+> problema concreto: nem todo dump de **CUSA01623 01.02** é idêntico byte a byte ao build contra
+> o qual os cheats e os patches do projeto original foram feitos. Em dumps com um `eboot.bin`
+> diferente, o código fica deslocado por região, e no projeto original todos os hooks (Very Hard,
+> saltos infinitos, vida/magia, barra de vida) e os patches de resolução eram recusados com
+> "code signature mismatch" — ou, se forçados, corrompiam o jogo.
+>
+> Esta versão **reloca hooks e patches por assinatura** para o seu dump: detecta o deslocamento do
+> build a partir de assinaturas únicas e reaplica cada hook/patch no lugar certo, verificando os
+> bytes antes de escrever. Com isso, no dump deslocado passam a funcionar os **cheats** (incluindo
+> **Unlock Very Hard**), a **barra de vida do inimigo** e as **resoluções 480p/720p**, além do
+> texture fix e do pular vídeos.
+>
+> Limitações atuais neste dump: 1440p/1800p/4K e o patch de 120/240 FPS ainda não estão mapeados
+> (caem para nativo com aviso, sem travar). Detalhes e passo a passo em
+> [docs/REPRODUZIR.md](docs/REPRODUZIR.md). O restante deste README é do projeto original.
 
 A native port of **God of War III Remastered** (PlayStation 4) to Windows 10 and 11.
 
